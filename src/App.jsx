@@ -1,16 +1,60 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import "./App.css";
-
+import wmo from "./data/wmo.json";
 function App() {
-    const [count, setCount] = useState(0);
+    const [weather, setWeather] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    async function fetchWeather(url) {
+        try {
+            setLoading(true);
+            // const response = await axios.get(url);
+            // setWeather(response.data);
+            setWeather({
+                latitude: -6.125,
+                longitude: 106.875,
+                generationtime_ms: 0.03707408905029297,
+                utc_offset_seconds: 25200,
+                timezone: "Asia/Bangkok",
+                timezone_abbreviation: "GMT+7",
+                elevation: 15,
+                current_units: {
+                    time: "iso8601",
+                    interval: "seconds",
+                    temperature_2m: "°C",
+                    rain: "mm",
+                    weather_code: "wmo code",
+                    relative_humidity_2m: "%",
+                    wind_speed_10m: "km/h",
+                    is_day: "1",
+                },
+                current: {
+                    time: "2025-05-18T12:30",
+                    interval: 900,
+                    temperature_2m: 33.7,
+                    rain: 0,
+                    weather_code: 2,
+                    relative_humidity_2m: 52,
+                    wind_speed_10m: 4.8,
+                    is_day: "1",
+                },
+            });
+            setLoading(false);
+        } catch (err) {
+            setError(err);
+        }
+    }
 
+    useEffect(() => {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=-6.1818&longitude=106.8223&current=temperature_2m,rain,weather_code,relative_humidity_2m,wind_speed_10m,is_day&timezone=Asia%2FBangkok`;
+        fetchWeather(url);
+    }, []);
     return (
         <>
             <div className="flex">
-                <div className="navbar bg-base-100 w-3/4">
-                    <label className="input bg-gray-100 rounded-md">
+                <div className="bg-blue-300 w-3/4 p-5">
+                    <label className="input bg-gray-100 rounded-md w-full">
                         <svg
                             className="h-[1em] opacity-50"
                             xmlns="http://www.w3.org/2000/svg"
@@ -33,11 +77,96 @@ function App() {
                             placeholder="Search city"
                         />
                     </label>
+                    {loading ? (
+                        <div className="rounded-md bg-white p-4 w-1/3">
+                            <div className="flex animate-pulse space-x-4">
+                                <div className="flex-1 space-y-6 py-1">
+                                    <div className="h-2 rounded bg-gray-200"></div>
+                                    <div className="space-y-3">
+                                        <div className="h-2 rounded bg-gray-200"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div>
+                            <p className="text-3xl">
+                                {weather?.current?.temperature_2m}
+                                {weather?.current_units?.temperature_2m}
+                            </p>
+                            <p>
+                                {
+                                    wmo[weather?.current?.weather_code]?.[
+                                        weather?.current?.is_day == 1
+                                            ? "day"
+                                            : "night"
+                                    ]?.description
+                                }
+                            </p>
+                        </div>
+                    )}
+                    <div className="flex justify-between">
+                        <div>
+                            <p>Humidity</p>
+                            <p>800mb</p>
+                        </div>
+                        <div>
+                            <p>Rain</p>
+                            <p>4.3 km</p>
+                        </div>
+                        <div>
+                            <p>Wind Speed</p>
+                            <p>87%</p>
+                        </div>
+                    </div>
                 </div>
                 <div className="w-1/4 bg-gray-100 p-5">
-                    <h2 className="text-2xl font-bold mb-5">
-                        Weather Prediction
-                    </h2>
+                    <div className="text-center mb-5">
+                        <img
+                            src="http://openweathermap.org/img/wn/01d@2x.png"
+                            alt="weather"
+                            className="w-1/2 mx-auto"
+                        />
+                        <p className="text-3xl">
+                            {weather?.current?.temperature_2m}
+                            {weather?.current_units?.temperature_2m}
+                        </p>
+                        <p>
+                            {
+                                wmo[weather?.current?.weather_code]?.[
+                                    weather?.current?.is_day == 1
+                                        ? "day"
+                                        : "night"
+                                ]?.description
+                            }
+                        </p>
+                    </div>
+                    <div className="flex justify-between">
+                        <h2 className="font-bold mb-5">Weather Forecast</h2>
+                        <p>7 Days</p>
+                    </div>
+                    <div className="flex bg-white rounded-lg p-3">
+                        <div className="w-1/4 flex justify-center items-center">
+                            <img
+                                src="http://openweathermap.org/img/wn/01d@2x.png"
+                                alt="weather"
+                                className="h-full"
+                            />
+                        </div>
+                        <div className="w-3/4 flex justify-center flex-col">
+                            <div>
+                                <p className="text-gray-500">November 10</p>
+                            </div>
+                            <div className="flex justify-between">
+                                <div>
+                                    <p>Cloudy</p>
+                                </div>
+                                <div>
+                                    <p className="text-orange-500">26°C</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div className="flex bg-white rounded-lg p-3">
                         <div className="w-1/4 flex justify-center items-center">
                             <img
