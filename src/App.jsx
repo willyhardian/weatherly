@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
+import { Droplets, MapPin, Wind } from "lucide-react";
 import wmo from "./data/wmo.json";
 function App() {
     const [weather, setWeather] = useState({});
@@ -77,8 +78,20 @@ function App() {
     return (
         <>
             <div className="flex">
-                <div className="bg-blue-200 w-3/4 p-5">
-                    <label className="input bg-gray-100 rounded-md w-full">
+                <div className="bg-white w-3/4 p-5">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="text-3xl my-4 text-orange-400 font-bold">
+                                Weatherly
+                            </p>
+                        </div>
+                        <div>
+                            <p className="flex gap-2">
+                                <MapPin /> Jakarta
+                            </p>
+                        </div>
+                    </div>
+                    <label className="input bg-gray-100 rounded-md w-full my-3">
                         <svg
                             className="h-[1em] opacity-50"
                             xmlns="http://www.w3.org/2000/svg"
@@ -114,30 +127,49 @@ function App() {
                         </div>
                     ) : (
                         <div>
-                            <div>
-                                <p className="text-3xl my-4">
-                                    {new Date().toLocaleDateString("en-US", {
-                                        weekday: "long",
-                                        year: "numeric",
-                                        month: "long",
-                                        day: "numeric",
+                            <div className="grid grid-cols-6 gap-4">
+                                {weather?.daily?.time
+                                    ?.slice(1)
+                                    .map((item, idx) => {
+                                        return (
+                                            <div className="rounded-lg bg-white p-4 text-center shadow-md">
+                                                <p>
+                                                    {new Date(
+                                                        item
+                                                    ).toLocaleDateString(
+                                                        "en-US",
+                                                        {
+                                                            weekday: "short",
+                                                        }
+                                                    )}
+                                                </p>
+
+                                                <img
+                                                    src={
+                                                        wmo[
+                                                            weather?.daily
+                                                                ?.weather_code[
+                                                                idx
+                                                            ]
+                                                        ]?.day?.image
+                                                    }
+                                                    alt="Weather Icon"
+                                                />
+                                                <p>
+                                                    {
+                                                        weather?.daily
+                                                            ?.temperature_2m_max[
+                                                            idx
+                                                        ]
+                                                    }
+                                                    {
+                                                        weather?.daily_units
+                                                            ?.temperature_2m_max
+                                                    }
+                                                </p>
+                                            </div>
+                                        );
                                     })}
-                                </p>
-                            </div>
-                            <div className="flex justify-between">
-                                {weather?.daily?.time?.map((item) => {
-                                    return (
-                                        <div className="rounded-lg bg-white p-4">
-                                            <p>
-                                                {new Date(
-                                                    item
-                                                ).toLocaleDateString("en-US", {
-                                                    weekday: "short",
-                                                })}
-                                            </p>
-                                        </div>
-                                    );
-                                })}
                                 <div></div>
                             </div>
                             {/* <div className="flex justify-between">
@@ -169,7 +201,7 @@ function App() {
                             </div> */}
                         </div>
                     )}
-                    <div className="flex justify-between">
+                    {/* <div className="flex justify-between">
                         <div>
                             <p>Humidity</p>
                             <p>800mb</p>
@@ -182,20 +214,34 @@ function App() {
                             <p>Wind Speed</p>
                             <p>87%</p>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
-                <div className="w-1/4 bg-gray-100 p-5">
+                <div className="w-1/4 bg-orange-50 p-5 h-screen">
+                    <p className="font-bold text-center">
+                        {new Date().toLocaleDateString("en-US", {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
+                    </p>
                     <div className="text-center mb-5">
                         <img
-                            src="http://openweathermap.org/img/wn/01d@2x.png"
+                            src={
+                                wmo[weather?.current?.weather_code]?.[
+                                    weather?.current?.is_day == 1
+                                        ? "day"
+                                        : "night"
+                                ]?.image
+                            }
                             alt="weather"
                             className="w-1/2 mx-auto"
                         />
-                        <p className="text-3xl">
+                        <p className="text-3xl my-3">
                             {weather?.current?.temperature_2m}
                             {weather?.current_units?.temperature_2m}
                         </p>
-                        <p>
+                        <p className="my-3">
                             {
                                 wmo[weather?.current?.weather_code]?.[
                                     weather?.current?.is_day == 1
@@ -204,14 +250,27 @@ function App() {
                                 ]?.description
                             }
                         </p>
+                        <p className="flex justify-center gap-2">
+                            <Wind />
+                            {weather?.current?.wind_speed_10m}
+                            <span>|</span>
+                            <Droplets />
+                            {weather?.current?.relative_humidity_2m}
+                        </p>
                     </div>
-                    <div className="flex justify-between">
+                    {/* <div className="flex justify-between">
                         <h2 className="font-bold mb-5">Other large cities</h2>
-                    </div>
-                    <div className="flex bg-white rounded-lg p-3">
+                    </div> */}
+                    {/* <div className="flex bg-white rounded-lg p-3">
                         <div className="w-1/4 flex justify-center items-center">
                             <img
-                                src="http://openweathermap.org/img/wn/01d@2x.png"
+                                src={
+                                    wmo[weather?.current?.weather_code]?.[
+                                        weather?.current?.is_day == 1
+                                            ? "day"
+                                            : "night"
+                                    ]?.image
+                                }
                                 alt="weather"
                                 className="w-full"
                             />
@@ -229,7 +288,7 @@ function App() {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </>
