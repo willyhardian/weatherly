@@ -14,7 +14,7 @@ function App() {
             setWeather({
                 latitude: -6.125,
                 longitude: 106.875,
-                generationtime_ms: 0.03707408905029297,
+                generationtime_ms: 0.0940561294555664,
                 utc_offset_seconds: 25200,
                 timezone: "Asia/Bangkok",
                 timezone_abbreviation: "GMT+7",
@@ -27,17 +27,41 @@ function App() {
                     weather_code: "wmo code",
                     relative_humidity_2m: "%",
                     wind_speed_10m: "km/h",
-                    is_day: "1",
+                    is_day: "",
                 },
                 current: {
-                    time: "2025-05-18T12:30",
+                    time: "2025-05-18T16:00",
                     interval: 900,
-                    temperature_2m: 33.7,
+                    temperature_2m: 31.4,
                     rain: 0,
-                    weather_code: 2,
-                    relative_humidity_2m: 52,
-                    wind_speed_10m: 4.8,
-                    is_day: "1",
+                    weather_code: 3,
+                    relative_humidity_2m: 67,
+                    wind_speed_10m: 9.9,
+                    is_day: 1,
+                },
+                daily_units: {
+                    time: "iso8601",
+                    weather_code: "wmo code",
+                    temperature_2m_max: "°C",
+                    temperature_2m_min: "°C",
+                },
+                daily: {
+                    time: [
+                        "2025-05-18",
+                        "2025-05-19",
+                        "2025-05-20",
+                        "2025-05-21",
+                        "2025-05-22",
+                        "2025-05-23",
+                        "2025-05-24",
+                    ],
+                    weather_code: [80, 3, 3, 95, 95, 3, 95],
+                    temperature_2m_max: [
+                        34, 33.9, 33.4, 31.8, 31.5, 32.1, 32.9,
+                    ],
+                    temperature_2m_min: [
+                        26.3, 26.2, 26.2, 26.1, 25.7, 26.2, 25.9,
+                    ],
                 },
             });
             setLoading(false);
@@ -53,7 +77,7 @@ function App() {
     return (
         <>
             <div className="flex">
-                <div className="bg-blue-300 w-3/4 p-5">
+                <div className="bg-blue-200 w-3/4 p-5">
                     <label className="input bg-gray-100 rounded-md w-full">
                         <svg
                             className="h-[1em] opacity-50"
@@ -90,19 +114,59 @@ function App() {
                         </div>
                     ) : (
                         <div>
-                            <p className="text-3xl">
-                                {weather?.current?.temperature_2m}
-                                {weather?.current_units?.temperature_2m}
-                            </p>
-                            <p>
-                                {
-                                    wmo[weather?.current?.weather_code]?.[
-                                        weather?.current?.is_day == 1
-                                            ? "day"
-                                            : "night"
-                                    ]?.description
-                                }
-                            </p>
+                            <div>
+                                <p className="text-3xl my-4">
+                                    {new Date().toLocaleDateString("en-US", {
+                                        weekday: "long",
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                    })}
+                                </p>
+                            </div>
+                            <div className="flex justify-between">
+                                {weather?.daily?.time?.map((item) => {
+                                    return (
+                                        <div className="rounded-lg bg-white p-4">
+                                            <p>
+                                                {new Date(
+                                                    item
+                                                ).toLocaleDateString("en-US", {
+                                                    weekday: "short",
+                                                })}
+                                            </p>
+                                        </div>
+                                    );
+                                })}
+                                <div></div>
+                            </div>
+                            {/* <div className="flex justify-between">
+                                <div>
+                                    <p>Weather Forecast</p>
+                                    <p className="text-3xl">
+                                        {weather?.current?.temperature_2m}
+                                        {weather?.current_units?.temperature_2m}
+                                    </p>
+                                    <p>
+                                        {
+                                            wmo[
+                                                weather?.current?.weather_code
+                                            ]?.[
+                                                weather?.current?.is_day == 1
+                                                    ? "day"
+                                                    : "night"
+                                            ]?.description
+                                        }
+                                    </p>
+                                </div>
+                                <div>
+                                    <img
+                                        src="http://openweathermap.org/img/wn/01d@2x.png"
+                                        alt="weather"
+                                        className="w-[5em]"
+                                    />
+                                </div>
+                            </div> */}
                         </div>
                     )}
                     <div className="flex justify-between">
@@ -142,42 +206,19 @@ function App() {
                         </p>
                     </div>
                     <div className="flex justify-between">
-                        <h2 className="font-bold mb-5">Weather Forecast</h2>
-                        <p>7 Days</p>
+                        <h2 className="font-bold mb-5">Other large cities</h2>
                     </div>
                     <div className="flex bg-white rounded-lg p-3">
                         <div className="w-1/4 flex justify-center items-center">
                             <img
                                 src="http://openweathermap.org/img/wn/01d@2x.png"
                                 alt="weather"
-                                className="h-full"
+                                className="w-full"
                             />
                         </div>
                         <div className="w-3/4 flex justify-center flex-col">
                             <div>
-                                <p className="text-gray-500">November 10</p>
-                            </div>
-                            <div className="flex justify-between">
-                                <div>
-                                    <p>Cloudy</p>
-                                </div>
-                                <div>
-                                    <p className="text-orange-500">26°C</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex bg-white rounded-lg p-3">
-                        <div className="w-1/4 flex justify-center items-center">
-                            <img
-                                src="http://openweathermap.org/img/wn/01d@2x.png"
-                                alt="weather"
-                                className="h-full"
-                            />
-                        </div>
-                        <div className="w-3/4 flex justify-center flex-col">
-                            <div>
-                                <p className="text-gray-500">November 10</p>
+                                <p className="text-gray-500">Jakarta</p>
                             </div>
                             <div className="flex justify-between">
                                 <div>
