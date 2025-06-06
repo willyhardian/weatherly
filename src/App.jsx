@@ -127,7 +127,7 @@ function App() {
                         </div>
                     ) : (
                         <div>
-                            <div className="grid grid-cols-6 gap-4">
+                            <div className="grid grid-cols-3 gap-4">
                                 {weather?.daily?.time
                                     ?.slice(1)
                                     .map((item, idx) => {
@@ -139,7 +139,7 @@ function App() {
                                                     ).toLocaleDateString(
                                                         "en-US",
                                                         {
-                                                            weekday: "short",
+                                                            weekday: "long",
                                                         }
                                                     )}
                                                 </p>
@@ -153,6 +153,7 @@ function App() {
                                                             ]
                                                         ]?.day?.image
                                                     }
+                                                    className="mx-auto"
                                                     alt="Weather Icon"
                                                 />
                                                 <p>
